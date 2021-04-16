@@ -1,2 +1,2 @@
 Flask
-web3
+bigchaindb_driver

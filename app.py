@@ -43,14 +43,12 @@ def indexView(uid):
     for euid in d:
         if euid not in delass:
             fl.append(sorted(d[euid], key=sortFuncTime)[-1])
-    print(fl)
     return jsonify(fl)
 
 
 @app.route('/query/<euid>', methods=['GET'])
 def detailView(euid):
     l = bdb.assets.get(search=euid)
-    print(l)
     l = sorted(l, key=sortFuncTime2)
     return jsonify(l[-1])
 
@@ -58,7 +56,6 @@ def detailView(euid):
 @app.route('/query/doc', methods=['GET'])
 def indexDocView():
     l = bdb.assets.get(search="DataEntry")
-    print(l)
     l = l[3:]
     d = {}
     l = sorted(l, key=sortFuncEUID)
