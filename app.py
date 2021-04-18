@@ -3,31 +3,35 @@ from bigchaindb_driver import BigchainDB
 from bigchaindb_driver.crypto import generate_keypair
 from datetime import datetime
 
-# Start Flask app
+## START FLASK APP
 app = Flask(__name__)
 
-# Setup BigchainDB conenction
-bdb_root_url = 'http://localhost:9984'
+## SETUP BIGCHAINDB CONNECTION
+
+#URL where bigchiandb is running
+bdb_root_url = 'http://localhost:9984' 
 bdb = BigchainDB(bdb_root_url)
+
+#creating keys to sign assets to be stored in bigchaindb
 alice, bob = generate_keypair(), generate_keypair()
 
-
+#sorts assets according to timestamp
 def sortFuncTime(obj):
     return datetime.fromisoformat(obj['timestamp'])
 
-
+#sorts assets according to timestamp(different asset structure)
 def sortFuncTime2(obj):
     return datetime.fromisoformat(obj['data']['timestamp'])
 
-
+#sorts assest according to Entry UID
 def sortFuncEUID(obj):
     return obj['data']['euid']
-
 
 @app.route('/query/all/<uid>', methods=['GET'])
 def indexView(uid):
     l = bdb.assets.get(search=uid)
-    l = l[3:]
+    if uid=='bhjwk':
+        l = l[3:]
     d = {}
     l = sorted(l, key=sortFuncEUID)
     delass = []
@@ -43,6 +47,7 @@ def indexView(uid):
     for euid in d:
         if euid not in delass:
             fl.append(sorted(d[euid], key=sortFuncTime)[-1])
+    print(fl)
     return jsonify(fl)
 
 
